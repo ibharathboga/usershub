@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const iaxios = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com/users",
+  baseURL: "https://68d0da6ce6c0cbeb39a2a3fa.mockapi.io/users/",
 });
 
 export default iaxios;
