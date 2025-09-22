@@ -1,56 +1,90 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import iaxios from "../utils/axios";
+import { useUsersContext } from "../UsersProvider";
 
 export default function useUsers() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { users, setUsers } = useUsersContext();
 
-  const request = async (fn, updateState) => {
-    setLoading(true);
+  const [status, setStatus] = useState({
+    fetch: { loading: false, error: null },
+    create: { loading: false, error: null },
+    update: { loading: false, error: null },
+    delete: { loading: false, error: null },
+  });
+
+  const setLoading = (op, value) =>
+    setStatus(prev => ({ ...prev, [op]: { ...prev[op], loading: value } }));
+
+  const setError = (op, value) =>
+    setStatus(prev => ({ ...prev, [op]: { ...prev[op], error: value } }));
+
+  const fetchUsers = async () => {
+    setLoading("fetch", true);
+    setError("fetch", null);
     try {
-      const response = await fn();
-      console.log(response);
-      updateState(response.data);
+      const res = await iaxios.get("/users");
+      setUsers(res.data);
     } catch (err) {
-      console.error(err);
-      throw err;
+      setError("fetch", err);
     } finally {
-      setLoading(false);
+      setLoading("fetch", false);
     }
   };
 
-  const fetchUsers = () => request(
-    () => iaxios.get("/"),
-    (data) => setUsers(data)
-  );
+  const createUser = async (newUser) => {
+    setLoading("create", true);
+    setError("create", null);
+    try {
+      const res = await iaxios.post("/users", newUser);
+      setUsers([...users, res.data]);
+      return res.data;
+    } catch (err) {
+      setError("create", err);
+      throw err;
+    } finally {
+      setLoading("create", false);
+    }
+  };
 
-  const addUser = (user) => request(
-    // always gives success response
-    // does not consider the id we set in the user object,
-    // id is just set to 11
-    // had to set userId for later operations
-    () => iaxios.post("/", { ...user, userId: Number(String(String(Date.now()))) }),
-    (newUser) => setUsers(prev => [...prev, newUser])
-  );
+  const updateUser = async (id, updatedFields) => {
+    setLoading("update", true);
+    setError("update", null);
+    try {
+      const res = await iaxios.put(`/users/${id}`, updatedFields);
+      setUsers(users.map(u => (u.id === id ? res.data : u)));
+      return res.data;
+    } catch (err) {
+      setError("update", err);
+      throw err;
+    } finally {
+      setLoading("update", false);
+    }
+  };
 
-  // eslint-disable-next-line no-unused-vars
-  const usersUpdateFn = ({ userId, updatedFields, _ }) => {
-    const user = users.find(u => u.id === userId || u.userId === userId)
-    const updatedUser = { ...user, ...updatedFields }
-    setUsers(prev => prev.map(x => (userId === x.id || userId === x.userId) ? updatedUser : x))
-  }
-  const editUser = ({ userId, updatedFields, showSuccess }) => request(
-    () => iaxios.put(`/${showSuccess ? 1 : 111}`, updatedFields),
-    (_) => usersUpdateFn({ userId, updatedFields, _ })
-  );
+  const deleteUser = async (id) => {
+    setLoading("delete", true);
+    setError("delete", null);
+    try {
+      await iaxios.delete(`/users/${id}`);
+      setUsers(users.filter(u => u.id !== id));
+    } catch (err) {
+      setError("delete", err);
+      throw err;
+    } finally {
+      setLoading("delete", false);
+    }
+  };
 
-  const deleteUser = (userId) => request(
-    // this always gives success state regardless of userId
-    () => iaxios.delete(`/${userId}`),
-    () => setUsers(prev => prev.filter(x => x.userId !== userId && x.id !== userId))
-  );
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  useEffect(() => { fetchUsers(); }, []);
-
-  return { users, setUsers, loading, fetchUsers, addUser, editUser, deleteUser };
+  return {
+    users,
+    status,
+    fetchUsers,
+    createUser,
+    updateUser,
+    deleteUser
+  };
 }
