@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useUsers from "./hooks/useUsers";
+import { toast } from "react-toastify";
 
 export default function App() {
   const { users, status, createUser, updateUser, deleteUser } = useUsers();
-  const [demoCounter, setDemoCounter] = useState(100); // for dummy ids/names
+  const [demoCounter, setDemoCounter] = useState(100);
 
   const handleAdd = async () => {
     const newUser = {
@@ -40,11 +41,16 @@ export default function App() {
   if (status.fetch.loading) return <p>Loading users...</p>;
   if (status.fetch.error) return <p>Error loading users: {status.fetch.error.message}</p>;
 
+  const notify = () => toast('Wow so easy !');
+
+
   return (
     <div style={{ padding: 20 }}>
       <h2>Users Demo</h2>
+      <button onClick={notify}>toast</button>
 
       <button
+        className="border-2 border-red-500"
         onClick={handleAdd}
         style={{ marginBottom: 10 }}
         disabled={status.create.loading}
