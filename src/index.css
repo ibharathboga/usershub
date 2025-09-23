@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border: 0.0625rem solid #000;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background-color: #000;
+  color: #fff;
+}
+
+button:disabled {
+  background-color: #f0f0f0;
+  color: #888;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
