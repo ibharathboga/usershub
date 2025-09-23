@@ -1,6 +1,8 @@
 import { Edit, Loader2, Trash } from "lucide-react";
+import { useUsersControlContext } from "../UsersControlProvider";
 
-export default function UserCard({ user, iUserActions, formControl }) {
+export default function UserCard({ user }) {
+  const { iUserActions, formControl } = useUsersControlContext();
   const {
     handleDeleteUser,
     editTargetId,

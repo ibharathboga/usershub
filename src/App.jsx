@@ -3,15 +3,13 @@ import { useEffect, useState } from "react";
 import UserCard from "./components/UserCard";
 import UserForm from "./components/UserForm";
 import UserRow from "./components/UserRow";
-import useUserActions from "./hooks/useUserActions";
-import useUserForm from "./hooks/useUserForm";
+import { useUsersControlContext } from "./UsersControlProvider";
 import { useUsersContext } from "./UsersProvider";
 import iaxios from "./utils/axios";
 
 export default function App() {
   const { users, setUsers } = useUsersContext();
-  const iUserActions = useUserActions();
-  const formControl = useUserForm();
+  const { formControl } = useUsersControlContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +27,6 @@ export default function App() {
 
     fetchUsers();
   }, []);
-
 
   if (loading) {
     return (
@@ -51,12 +48,7 @@ export default function App() {
         </button>
       </div>
 
-      <UserForm
-        visible={formControl.formVisible}
-        initialUser={formControl.editingUser}
-        iUserActions={iUserActions}
-        onCancel={formControl.onCancel}
-      />
+      <UserForm />
 
       {users.length === 0 ? (
         <p>No users found.</p>
@@ -76,12 +68,7 @@ export default function App() {
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <UserRow
-                    key={user.id}
-                    user={user}
-                    iUserActions={iUserActions}
-                    formControl={formControl}
-                  />
+                  <UserRow key={user.id} user={user} />
                 ))}
               </tbody>
             </table>
@@ -89,12 +76,7 @@ export default function App() {
 
           <div className="md:hidden space-y-4">
             {users.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                iUserActions={iUserActions}
-                formControl={formControl}
-              />
+              <UserCard key={user.id} user={user} />
             ))}
           </div>
         </>

@@ -1,6 +1,8 @@
 import { Edit, Loader2, Trash } from "lucide-react";
+import { useUsersControlContext } from "../UsersControlProvider";
 
-export default function UserRow({ user, iUserActions, formControl }) {
+export default function UserRow({ user }) {
+  const { iUserActions, formControl } = useUsersControlContext();
   const {
     handleDeleteUser,
     editTargetId,
@@ -11,9 +13,7 @@ export default function UserRow({ user, iUserActions, formControl }) {
 
   const isEditing = user.id === editTargetId;
   const isDeleting = user.id === deleteTargetId;
-
   const { handleEditClick } = formControl;
-
   return (
     <tr className="hover:bg-gray-50 transition">
       <td className="p-3 border-b">{user.id}</td>

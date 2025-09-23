@@ -1,10 +1,10 @@
-export default function UserForm({
-  visible = false,
-  initialUser = null,
-  iUserActions,
-  onCancel,
-}) {
-  if (!visible) return null;
+import { useUsersControlContext } from "../UsersControlProvider";
+
+export default function UserForm() {
+  const { iUserActions, formControl } = useUsersControlContext();
+  const initialUser = formControl.editingUser;
+  const { onCancel } = formControl;
+  if (!formControl.formVisible) return null;
 
   const isEdit = !!initialUser?.id;
 

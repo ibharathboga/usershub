@@ -5,6 +5,7 @@ function useUserForm() {
   const [editingUser, setEditingUser] = useState(null);
 
   const handleAddClick = () => {
+    console.log('handleAddClick');
     setEditingUser(null);
     setFormVisible(true);
   };
