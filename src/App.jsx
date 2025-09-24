@@ -76,10 +76,10 @@ export default function App() {
       
       <h2 className="text-2xl mb-2">
   Note: A better version can be seen at  
-  <a href="https://usershub-git-dev-main-ibharathbogas-projects.vercel.app/?_vercel_share=fW0HPTw2ZoU4UI6Bia5AiqgeqxvCnNob" target="_blank">
+  <a className="border-2 border-red-500" href="https://usershub-git-dev-main-ibharathbogas-projects.vercel.app/?_vercel_share=fW0HPTw2ZoU4UI6Bia5AiqgeqxvCnNob" target="_blank">
     this link
   </a>.  
-  The code is available in the <code>dev/main</code> branch with its own readme file, click <a href="https://github.com/ibharathboga/usershub/tree/dev/main" target="_blank">here</a> to get to branch
+  The code is available in the <code>dev/main</code> branch with its own readme file, click <a className="border-2 border-red-500" href="https://github.com/ibharathboga/usershub/tree/dev/main" target="_blank">here</a> to get to branch
 </h2>
       
       <div className="border-2 border-blue-500 rounded-sm p-4 mb-4">
