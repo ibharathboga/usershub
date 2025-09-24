@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { UsersProvider } from './UsersProvider'
 import { UsersControlProvider } from './UsersControlProvider'
+import { ToastContainer } from 'react-toastify'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -12,5 +13,6 @@ createRoot(document.getElementById('root')).render(
         <App />
       </UsersControlProvider>
     </UsersProvider>
+    <ToastContainer />
   </StrictMode>,
 )
