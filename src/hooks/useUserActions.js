@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useUsersMutation from "./useUsersMutation";
+import { toast } from "react-toastify";
 
 export default function useUserActions() {
   const [editTargetId, setEditTargetId] = useState(null);
@@ -21,8 +22,11 @@ export default function useUserActions() {
       console.log(newUser);
       return newUser;
     } catch (err) {
-      console.error("failed to add user:");
-      console.error(err?.message ?? err);
+      toast.error(err?.message ?? "something went wrong...", {
+        position: "bottom-right",
+        autoClose: 2000,
+        theme: "dark",
+      });
       throw err;
     }
   };
@@ -36,8 +40,11 @@ export default function useUserActions() {
       console.log(updatedUser);
       return updatedUser;
     } catch (err) {
-      console.error("failed to edit user:");
-      console.error(err?.message ?? err);
+      toast.error(err?.message ?? "something went wrong...", {
+        position: "bottom-right",
+        autoClose: 2000,
+        theme: "dark",
+      });
       throw err;
     } finally {
       setEditTargetId(null);
@@ -52,8 +59,11 @@ export default function useUserActions() {
       console.log(deletedId);
       return deletedId;
     } catch (err) {
-      console.error("failed to delete user:");
-      console.error(err?.message ?? err);
+      toast.error(err?.message ?? "something went wrong...", {
+        position: "bottom-right",
+        autoClose: 2000,
+        theme: "dark",
+      });
       throw err;
     } finally {
       setDeleteTargetId(null);
