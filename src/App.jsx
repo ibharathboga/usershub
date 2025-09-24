@@ -71,7 +71,17 @@ export default function App() {
 
   return (
     <div className="p-5">
-      <h2 className="text-2xl mb-2">Users Dashboard</h2>
+      <h2 className="text-2xl mb-2">Users Dashboard.</h2>
+
+      
+      <h2>
+  Note: A better version can be seen at 
+  <a href="https://usershub-git-dev-main-ibharathbogas-projects.vercel.app/?_vercel_share=fW0HPTw2ZoU4UI6Bia5AiqgeqxvCnNob" target="_blank">
+    this link
+  </a>.  
+  The code is available in the <code>dev/main</code> branch.
+</h2>
+      
       <div className="border-2 border-blue-500 rounded-sm p-4 mb-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Users</h2>
