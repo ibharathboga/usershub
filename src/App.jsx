@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import UserCard from "./components/UserCard";
 import UserForm from "./components/UserForm";
 import UserRow from "./components/UserRow";
-import { useUsersControlContext } from "./UsersControlProvider";
 import { useUsersContext } from "./UsersProvider";
+import { useUsersControlContext } from "./UsersControlProvider";
 import iaxios from "./utils/axios";
+import useTableData from "./hooks/useTableData";
 
 export default function App() {
   const { users, setUsers } = useUsersContext();
@@ -24,9 +25,22 @@ export default function App() {
         setLoading(false);
       }
     };
-
     fetchUsers();
   }, []);
+
+  const {
+    paginatedData,
+    handleSort,
+    handleSearch,
+    handlePrev,
+    handleNext,
+    handleItemsPerPageChange,
+    sortField,
+    sortOrder,
+    currentPage,
+    itemsPerPage,
+    searchTerm
+  } = useTableData(users, { initialItemsPerPage: 5 });
 
   if (loading) {
     return (
@@ -50,6 +64,33 @@ export default function App() {
 
       <UserForm />
 
+      {users.length > 0 && (
+        <div className="flex flex-col md:flex-row justify-between mb-2 gap-2">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="border rounded px-2 py-1 w-full md:w-1/3"
+          />
+
+          <div className="flex items-center gap-2">
+            <label className="font-medium">Show:</label>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
+              className="border rounded px-2 py-1"
+            >
+              {[5, 10, 25, 50, 100].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
@@ -58,16 +99,27 @@ export default function App() {
             <table className="min-w-full border border-gray-200 rounded shadow-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="p-3 text-left border-b">ID</th>
-                  <th className="p-3 text-left border-b">First Name</th>
-                  <th className="p-3 text-left border-b">Last Name</th>
-                  <th className="p-3 text-left border-b">Email</th>
-                  <th className="p-3 text-left border-b">Department</th>
+                  {["id", "first_name", "last_name", "email", "department"].map(
+                    (field) => (
+                      <th
+                        key={field}
+                        className="p-3 text-left border-b cursor-pointer select-none"
+                        onClick={() => handleSort(field)}
+                      >
+                        {field.replace("_", " ").toUpperCase()}
+                        {sortField === field
+                          ? sortOrder === "asc"
+                            ? " ▲"
+                            : " ▼"
+                          : " ▲▼"}
+                      </th>
+                    )
+                  )}
                   <th className="p-3 text-left border-b">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {paginatedData.map((user) => (
                   <UserRow key={user.id} user={user} />
                 ))}
               </tbody>
@@ -75,9 +127,46 @@ export default function App() {
           </div>
 
           <div className="md:hidden space-y-4">
-            {users.map((user) => (
+            <thead className="bg-gray-100">
+              <tr>
+                {["id", "first_name", "last_name", "email", "department"].map(
+                  (field) => (
+                    <th
+                      key={field}
+                      className="p-3 text-left border-b cursor-pointer select-none"
+                      onClick={() => handleSort(field)}
+                    >
+                      {field.replace("_", " ").toUpperCase()}
+                      {sortField === field
+                        ? sortOrder === "asc"
+                          ? " ▲"
+                          : " ▼"
+                        : " ▲▼"}
+                    </th>
+                  )
+                )}
+              </tr>
+            </thead>
+            {paginatedData.map((user) => (
               <UserCard key={user.id} user={user} />
             ))}
+          </div>
+
+          <div className="flex justify-center gap-2 mt-4">
+            <button
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+              className="px-4 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentPage * itemsPerPage >= users.length}
+              className="px-4 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </>
       )}
