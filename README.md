@@ -7,7 +7,7 @@ This project is a simple **User Management Dashboard** built as part of a given 
 The main focus has been to implement the required functionality in a **clean and modular way**, while keeping the interface simple and responsive.
 
 ## NOTE
-better version of this webapp can be found at [dev/main](https://github.com/ibharathboga/usershub/tree/dev/main) branch which is live at [click here](https://usershub-git-dev-main-ibharathbogas-projects.vercel.app/)
+better version of this webapp can be found at [dev/main](https://github.com/ibharathboga/usershub/tree/dev/main) branch which is live at [click here](https://usershub-git-dev-main-ibharathbogas-projects.vercel.app?_vercel_share=fW0HPTw2ZoU4UI6Bia5AiqgeqxvCnNob)
 
 ## Features
 
