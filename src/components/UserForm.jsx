@@ -1,9 +1,41 @@
+import { useState } from "react";
 import { useUsersControlContext } from "../UsersControlProvider";
+
+const validateUserData = ({ first_name, last_name, email, department }) => {
+  const errors = {};
+
+  if (!first_name || first_name.trim().length < 2) {
+    errors.first_name = "First name must be at least 2 characters.";
+  } else if (!/^[A-Za-z\s]+$/.test(first_name)) {
+    errors.first_name = "First name must contain only letters.";
+  }
+
+  if (!last_name || last_name.trim().length < 2) {
+    errors.last_name = "Last name must be at least 2 characters.";
+  } else if (!/^[A-Za-z\s]+$/.test(last_name)) {
+    errors.last_name = "Last name must contain only letters.";
+  }
+
+  if (!email) {
+    errors.email = "Email is required.";
+  } else if (!/^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+    errors.email = "Email is invalid.";
+  }
+
+  if (!department || department.trim().length === 0) {
+    errors.department = "Department is required.";
+  } else if (!/^[A-Za-z\s]+$/.test(department)) {
+    errors.department = "Department must contain only letters.";
+  }
+
+  return errors;
+};
 
 export default function UserForm() {
   const { iUserActions, formControl } = useUsersControlContext();
   const initialUser = formControl.editingUser;
   const { onCancel } = formControl;
+  const [errors, setErrors] = useState({});
   if (!formControl.formVisible) return null;
 
   const isEdit = !!initialUser?.id;
@@ -13,11 +45,18 @@ export default function UserForm() {
 
     const form = e.target;
     const data = {
-      first_name: form.first_name.value,
-      last_name: form.last_name.value,
-      email: form.email.value,
-      department: form.department.value,
+      first_name: form.first_name.value.trim(),
+      last_name: form.last_name.value.trim(),
+      email: form.email.value.trim(),
+      department: form.department.value.trim(),
     };
+
+    const validationErrors = validateUserData(data);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
 
     try {
       if (isEdit) {
@@ -52,6 +91,9 @@ export default function UserForm() {
               className="w-full border rounded p-2"
               required
             />
+            {errors.first_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>
+            )}
           </div>
 
           <div>
@@ -63,6 +105,9 @@ export default function UserForm() {
               className="w-full border rounded p-2"
               required
             />
+            {errors.last_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>
+            )}
           </div>
 
           <div>
@@ -74,6 +119,9 @@ export default function UserForm() {
               className="w-full border rounded p-2"
               required
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -85,6 +133,9 @@ export default function UserForm() {
               className="w-full border rounded p-2"
               required
             />
+            {errors.department && (
+              <p className="text-red-500 text-sm mt-1">{errors.department}</p>
+            )}
           </div>
 
           <div className="flex justify-end gap-2">
