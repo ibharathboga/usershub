@@ -7,6 +7,7 @@ import { useUsersContext } from "./UsersProvider";
 import { useUsersControlContext } from "./UsersControlProvider";
 import iaxios from "./utils/axios";
 import useTableData from "./hooks/useTableData";
+import UsersFilter from "./components/UsersFilters";
 
 export default function App() {
   const { users, setUsers } = useUsersContext();
@@ -26,20 +27,22 @@ export default function App() {
       }
     };
     fetchUsers();
-  }, []);
+  }, [setUsers]);
 
   const {
     paginatedData,
+    currentPage,
+    itemsPerPage,
+    sortField,
+    sortOrder,
+    searchTerm,
+    filters,
     handleSort,
     handleSearch,
     handlePrev,
     handleNext,
     handleItemsPerPageChange,
-    sortField,
-    sortOrder,
-    currentPage,
-    itemsPerPage,
-    searchTerm
+    handleFilters,
   } = useTableData(users, { initialItemsPerPage: 5 });
 
   if (loading) {
@@ -91,6 +94,8 @@ export default function App() {
         </div>
       )}
 
+      <UsersFilter filters={filters} setFilters={handleFilters} />
+
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
@@ -127,26 +132,6 @@ export default function App() {
           </div>
 
           <div className="md:hidden space-y-4">
-            <thead className="bg-gray-100">
-              <tr>
-                {["id", "first_name", "last_name", "email", "department"].map(
-                  (field) => (
-                    <th
-                      key={field}
-                      className="p-3 text-left border-b cursor-pointer select-none"
-                      onClick={() => handleSort(field)}
-                    >
-                      {field.replace("_", " ").toUpperCase()}
-                      {sortField === field
-                        ? sortOrder === "asc"
-                          ? " ▲"
-                          : " ▼"
-                        : " ▲▼"}
-                    </th>
-                  )
-                )}
-              </tr>
-            </thead>
             {paginatedData.map((user) => (
               <UserCard key={user.id} user={user} />
             ))}
